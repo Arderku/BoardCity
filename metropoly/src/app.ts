@@ -36,6 +36,10 @@ class App {
         engine.runRenderLoop(() => {
             scene.render();
         });
+
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
     }
 }
 new App();
