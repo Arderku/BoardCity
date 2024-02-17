@@ -15,10 +15,33 @@ class App {
         var engine = new Engine(canvas, true);
         var scene = new Scene(engine);
 
-        var camera: ArcRotateCamera = new ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, Vector3.Zero(), scene);
+         // Parameters for an isometric view
+         const alpha = -Math.PI / 4; // 45 degrees rotation around the Y axis
+         const beta = Math.atan(Math.sqrt(2)); // Elevation angle
+         const radius = 10; // Distance from the object
+
+        var camera = new ArcRotateCamera("Camera", alpha, beta, radius, new Vector3(0, 0, 0), scene);
         camera.attachControl(canvas, true);
-        var light1: HemisphericLight = new HemisphericLight("light1", new Vector3(1, 1, 0), scene);
+
+        // Set camera limits to prevent it from moving from the isometric view
+        camera.lowerAlphaLimit = alpha;
+        camera.upperAlphaLimit = alpha;
+        camera.lowerBetaLimit = beta;
+        camera.upperBetaLimit = beta;
+        camera.lowerRadiusLimit = radius;
+        camera.upperRadiusLimit = radius;
+        camera.panningSensibility = 0;
+        
+        var light: HemisphericLight = new HemisphericLight("light", new Vector3(1, 1, 0), scene);
+        
+        light.intensity = 0.7;
+
+        
         var sphere: Mesh = MeshBuilder.CreateSphere("sphere", { diameter: 1 }, scene);
+
+        sphere.position.y = 1;
+
+        var ground = MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
 
         // hide/show the Inspector
         window.addEventListener("keydown", (ev) => {
